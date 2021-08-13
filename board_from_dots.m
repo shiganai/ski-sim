@@ -18,37 +18,37 @@ position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
 %% straight forces
 
-x_direction_init = position_init(2:end, :, :, :) - position_init(1:end-1, :, :, :);
+x_direction_init = calc_dir_and_force(position_init, 1, 0, 0);
 x_length_init = vecnorm(x_direction_init, 2, 4);
 
-y_direction_init = position_init(:, 2:end, :, :) - position_init(:, 1:end-1, :, :);
+y_direction_init = calc_dir_and_force(position_init, 0, 1, 0);
 y_length_init = vecnorm(y_direction_init, 2, 4);
 
-z_direction_init = position_init(:, :, 2:end, :) - position_init(:, :, 1:end-1, :);
+z_direction_init = calc_dir_and_force(position_init, 0, 0, 1);
 z_length_init = vecnorm(z_direction_init, 2, 4);
 
 %% xy forces
 
-xy_direction_init = position_init(2:end, 2:end, :, :) - position_init(1:end-1, 1:end-1, :, :);
+xy_direction_init = calc_dir_and_force(position_init, 1, 1, 0);
 xy_length_init = vecnorm(xy_direction_init, 2, 4);
 
-yx_direction_init = position_init(2:end, 1:end-1, :, :) - position_init(1:end-1, 2:end, :, :);
+yx_direction_init = calc_dir_and_force(position_init, 1, -1, 0);
 yx_length_init = vecnorm(yx_direction_init, 2, 4);
 
 %% yz forces
 
-yz_direction_init = position_init(:, 2:end, 2:end, :) - position_init(:, 1:end-1, 1:end-1, :);
+yz_direction_init = calc_dir_and_force(position_init, 0, 1, 1);
 yz_length_init = vecnorm(yz_direction_init, 2, 4);
 
-zy_direction_init = position_init(:, 2:end, 1:end-1, :) - position_init(:, 1:end-1, 2:end, :);
+zy_direction_init = calc_dir_and_force(position_init, 0, -1, 1);
 zy_length_init = vecnorm(zy_direction_init, 2, 4);
 
 %% zx forces
 
-zx_direction_init = position_init(2:end, :, 2:end, :) - position_init(1:end-1, :, 1:end-1, :);
+zx_direction_init = calc_dir_and_force(position_init, 1, 0, 1);
 zx_length_init = vecnorm(zx_direction_init, 2, 4);
 
-xz_direction_init = position_init(1:end-1, :, 2:end, :) - position_init(2:end, :, 1:end-1, :);
+xz_direction_init = calc_dir_and_force(position_init, -1, 0, 1);
 xz_length_init = vecnorm(xz_direction_init, 2, 4);
 
 
