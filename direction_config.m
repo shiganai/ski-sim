@@ -23,58 +23,58 @@ daspect(ones(1,3))
 
 towards = position(2:end, :, :, :);
 base = position(1:end-1, :, :, :);
-add_quiver3_dircon(towards, base)
 x_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 towards = position(:, 2:end, :, :);
 base = position(:, 1:end-1, :, :);
-add_quiver3_dircon(towards, base)
 y_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 towards = position(:, :, 2:end, :);
 base = position(:, :, 1:end-1, :);
-add_quiver3_dircon(towards, base)
 z_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 %% xy forces
 
 towards = position(2:end, 2:end, :, :);
 base = position(1:end-1, 1:end-1, :, :);
-add_quiver3_dircon(towards, base)
 xy_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 towards = position(2:end, 1:end-1, :, :);
 base = position(1:end-1, 2:end, :, :);
-add_quiver3_dircon(towards, base)
 yx_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 %% yz forces
 
 towards = position(:, 2:end, 2:end, :);
 base = position(:, 1:end-1, 1:end-1, :);
-add_quiver3_dircon(towards, base)
 yz_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 
 towards = position(:, 1:end-1, 2:end, :);
 base = position(:, 2:end, 1:end-1, :);
-add_quiver3_dircon(towards, base)
 zy_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 
 %% zx forces
 
 towards = position(2:end, :, 2:end, :);
 base = position(1:end-1, :, 1:end-1, :);
-add_quiver3_dircon(towards, base)
 zx_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 
 
 towards = position(1:end-1, :, 2:end, :);
 base = position(2:end, :, 1:end-1, :);
-add_quiver3_dircon(towards, base)
 xz_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 
 %% xyz forces
@@ -82,14 +82,14 @@ xz_direction = towards - base;
 
 towards = position(2:end, 2:end, 2:end, :);
 base = position(1:end-1, 1:end-1, 1:end-1, :);
-add_quiver3_dircon(towards, base)
 xyz_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 
 towards = position(2:end, 1:end-1, 2:end, :);
 base = position(1:end-1, 2:end, 1:end-1, :);
-add_quiver3_dircon(towards, base)
 yxz_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 
 towards = position(1:end-1, 2:end, 2:end, :);
@@ -100,8 +100,8 @@ zxy_direction = towards - base;
 
 towards = position(1:end-1, 1:end-1, 2:end, :);
 base = position(2:end, 2:end, 1:end-1, :);
-add_quiver3_dircon(towards, base)
 zyx_direction = towards - base;
+add_quiver3_dircon(towards, base)
 
 
 
