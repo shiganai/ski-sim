@@ -71,14 +71,14 @@ zyx_length_init = vecnorm(zyx_direction_init, 2, 4);
 
 % position = position_init + rand(size(position)) * 0.3;
 position = position_init;
-position(:, :, :, 3) = position(:, :, :, 3) + ones(1, col_num, stair_num) .* (((1:row_num)'-3)/2).^2;
+% position(:, :, :, 3) = position(:, :, :, 3) + ones(1, col_num, stair_num) .* (((1:row_num)'-3)/2).^2;
 
 velocity = velocity_init;
 
 x_tmp = position(:, :, :, 1); x_tmp = x_tmp(:);
 y_tmp = position(:, :, :, 2); y_tmp = y_tmp(:);
 z_tmp = position(:, :, :, 3); z_tmp = z_tmp(:);
-scatp = scatter3(x_tmp, y_tmp, z_tmp, 2);
+scatp = scatter3(x_tmp, y_tmp, z_tmp, 10);
 xlabel('X')
 ylabel('Y')
 zlabel('Z')
@@ -91,7 +91,7 @@ time = 0:1e-2:10; time = time';
 
     
 external_force = zeros(size(position));
-external_force(1,1,1,3) = 10;
+external_force(1,1,2,3) = 10;
 
 for time_index = 1:size(time, 1)
     
@@ -139,10 +139,7 @@ for time_index = 1:size(time, 1)
     scatp.XData = x_tmp;
     scatp.YData = y_tmp;
     scatp.ZData = z_tmp;
-    
-    if time(time_index) < 3
-        drawnow
-    end
+    drawnow
     
 end
 
