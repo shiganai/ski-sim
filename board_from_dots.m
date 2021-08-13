@@ -81,65 +81,24 @@ for time_index = 1:size(time, 1)
     
     %% straight forces
     
-    x_direction = position(2:end, :, :, :) - position(1:end-1, :, :, :);
-    x_length = vecnorm(x_direction, 2, 4);
-    x_force = -k * x_direction .* (x_length - x_length_init);
-    force(2:end, :, :, :) = force(2:end, :, :, :) + x_force;
-    force(1:end-1, :, :, :) = force(1:end-1, :, :, :) - x_force;
-    
-    y_direction = position(:, 2:end, :, :) - position(:, 1:end-1, :, :);
-    y_length = vecnorm(y_direction, 2, 4);
-    y_force = -k * y_direction .* (y_length - y_length_init);
-    force(:, 2:end, :, :) = force(:, 2:end, :, :) + y_force;
-    force(:, 1:end-1, :, :) = force(:, 1:end-1, :, :) - y_force;
-    
-    z_direction = position(:, :, 2:end, :) - position(:, :, 1:end-1, :);
-    z_length = vecnorm(z_direction, 2, 4);
-    z_force = -k * z_direction .* (z_length - z_length_init);
-    force(:, :, 2:end, :) = force(:, :, 2:end, :) + z_force;
-    force(:, :, 1:end-1, :) = force(:, :, 1:end-1, :) - z_force;
+    [~, force] = calc_dir_and_force(position, 1, 0, 0, x_length_init, force, k);
+    [~, force] = calc_dir_and_force(position, 0, 1, 0, y_length_init, force, k);
+    [~, force] = calc_dir_and_force(position, 0, 0, 1, z_length_init, force, k);
     
     %% xy forces
     
-    xy_direction = position(2:end, 2:end, :, :) - position(1:end-1, 1:end-1, :, :);
-    xy_length = vecnorm(xy_direction, 2, 4);
-    xy_force = -k * xy_direction .* (xy_length - xy_length_init);
-    force(2:end, 2:end, :, :) = force(2:end, 2:end, :, :) + xy_force;
-    force(1:end-1, 1:end-1, :, :) = force(1:end-1, 1:end-1, :, :) - xy_force;
-    
-    yx_direction = position(2:end, 1:end-1, :, :) - position(1:end-1, 2:end, :, :);
-    yx_length = vecnorm(yx_direction, 2, 4);
-    yx_force = -k * yx_direction .* (yx_length - yx_length_init);
-    force(2:end, 1:end-1, :, :) = force(2:end, 1:end-1, :, :) + yx_force;
-    force(1:end-1, 2:end, :, :) = force(1:end-1, 2:end, :, :) - yx_force;
+    [~, force] = calc_dir_and_force(position, 1, 1, 0, xy_length_init, force, k);
+    [~, force] = calc_dir_and_force(position, 1, -1, 0, yx_length_init, force, k);
     
     %% yz forces
     
-    yz_direction = position(:, 2:end, 2:end, :) - position(:, 1:end-1, 1:end-1, :);
-    yz_length = vecnorm(yz_direction, 2, 4);
-    yz_force = -k * yz_direction .* (yz_length - yz_length_init);
-    force(:, 2:end, 2:end, :) = force(:, 2:end, 2:end, :) + yz_force;
-    force(:, 1:end-1, 1:end-1, :) = force(:, 1:end-1, 1:end-1, :) - yz_force;
-    
-    zy_direction = position(:, 2:end, 1:end-1, :) - position(:, 1:end-1, 2:end, :);
-    zy_length = vecnorm(zy_direction, 2, 4);
-    zy_force = -k * zy_direction .* (zy_length - zy_length_init);
-    force(:, 2:end, 1:end-1, :) = force(:, 2:end, 1:end-1, :) + zy_force;
-    force(:, 1:end-1, 2:end, :) = force(:, 1:end-1, 2:end, :) - zy_force;
+    [~, force] = calc_dir_and_force(position, 0, 1, 1, yz_length_init, force, k);
+    [~, force] = calc_dir_and_force(position, 0, -1, 1, zy_length_init, force, k);
     
     %% zx forces
     
-    zx_direction = position(2:end, :, 2:end, :) - position(1:end-1, :, 1:end-1, :);
-    zx_length = vecnorm(zx_direction, 2, 4);
-    zx_force = -k * zx_direction .* (zx_length - zx_length_init);
-    force(2:end, :, 2:end, :) = force(2:end, :, 2:end, :) + zx_force;
-    force(1:end-1, :, 1:end-1, :) = force(1:end-1, :, 1:end-1, :) - zx_force;
-    
-    xz_direction = position(1:end-1, :, 2:end, :) - position(2:end, :, 1:end-1, :);
-    xz_length = vecnorm(xz_direction, 2, 4);
-    xz_force = -k * xz_direction .* (xz_length - xz_length_init);
-    force(1:end-1, :, 2:end, :) = force(1:end-1, :, 2:end, :) + xz_force;
-    force(2:end, :, 1:end-1, :) = force(2:end, :, 1:end-1, :) - xz_force;
+    [~, force] = calc_dir_and_force(position, 1, 0, 1, zx_length_init, force, k);
+    [~, force] = calc_dir_and_force(position, -1, 0, 1, xz_length_init, force, k);
     
     force = force - c * velocity;
     
