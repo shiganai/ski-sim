@@ -4,8 +4,9 @@
 col_num = 5;
 row_num = 5;
 stair_num = 3;
-k = 1;
+k = 10;
 m = 1;
+c = 5;
 
 position_init = NaN(row_num, col_num, stair_num, 3);
 velocity_init = zeros(size(position_init));
@@ -53,10 +54,9 @@ xz_length_init = vecnorm(xz_direction_init, 2, 4);
 
 %% at times
 
+% position = position_init + rand(size(position)) * 0.3;
 position = position_init;
-position(1, 1, 1, 1) = 0;
-position(1, 1, 1, 2) = 0;
-position(1, 1, 1, 3) = 0;
+position(:, :, :, 3) = position(:, :, :, 3) + ones(1, row_num, stair_num) .* (((1:row_num)'-3)/2).^2;
 
 velocity = velocity_init;
 
@@ -67,9 +67,12 @@ scatp = scatter3(x_tmp, y_tmp, z_tmp);
 xlabel('X')
 ylabel('Y')
 zlabel('Z')
+xlim([0, 6])
+ylim([0, 6])
+zlim([0, 6])
 daspect(ones(1,3))
 
-time = 0:1e-2:1; time = time';
+time = 0:1e-2:3; time = time';
 
 for time_index = 1:size(time, 1)
     
@@ -137,6 +140,8 @@ for time_index = 1:size(time, 1)
     xz_force = -k * xz_direction .* (xz_length - xz_length_init);
     force(1:end-1, :, 2:end, :) = force(1:end-1, :, 2:end, :) + xz_force;
     force(2:end, :, 1:end-1, :) = force(2:end, :, 1:end-1, :) - xz_force;
+    
+    force = force - c * velocity;
     
     position = position + velocity .* diff(time(1:2));
     velocity = velocity + force .* diff(time(1:2));
