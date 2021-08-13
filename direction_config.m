@@ -21,169 +21,87 @@ daspect(ones(1,3))
 
 %% straight forces
 
-x_direction = position(2:end, :, :, :) - position(1:end-1, :, :, :);
+towards = position(2:end, :, :, :);
+base = position(1:end-1, :, :, :);
+add_quiver3_dircon(towards, base)
+x_direction = towards - base;
 
-x_tmp = position(1:end-1, :, :, 1); x_tmp = x_tmp(:);
-y_tmp = position(1:end-1, :, :, 2); y_tmp = y_tmp(:);
-z_tmp = position(1:end-1, :, :, 3); z_tmp = z_tmp(:);
-u_tmp = x_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = x_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = x_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
+towards = position(:, 2:end, :, :);
+base = position(:, 1:end-1, :, :);
+add_quiver3_dircon(towards, base)
+y_direction = towards - base;
 
-y_direction = position(:, 2:end, :, :) - position(:, 1:end-1, :, :);
-
-x_tmp = position(:, 1:end-1, :, 1); x_tmp = x_tmp(:);
-y_tmp = position(:, 1:end-1, :, 2); y_tmp = y_tmp(:);
-z_tmp = position(:, 1:end-1, :, 3); z_tmp = z_tmp(:);
-u_tmp = y_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = y_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = y_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
-
-z_direction = position(:, :, 2:end, :) - position(:, :, 1:end-1, :);
-
-x_tmp = position(:, :, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(:, :, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(:, :, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = z_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = z_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = z_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
+towards = position(:, :, 2:end, :);
+base = position(:, :, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+z_direction = towards - base;
 
 %% xy forces
 
-xy_direction = position(2:end, 2:end, :, :) - position(1:end-1, 1:end-1, :, :);
+towards = position(2:end, 2:end, :, :);
+base = position(1:end-1, 1:end-1, :, :);
+add_quiver3_dircon(towards, base)
+xy_direction = towards - base;
 
-x_tmp = position(1:end-1, 1:end-1, :, 1); x_tmp = x_tmp(:);
-y_tmp = position(1:end-1, 1:end-1, :, 2); y_tmp = y_tmp(:);
-z_tmp = position(1:end-1, 1:end-1, :, 3); z_tmp = z_tmp(:);
-u_tmp = xy_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = xy_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = xy_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
-
-yx_direction = position(2:end, 1:end-1, :, :) - position(1:end-1, 2:end, :, :);
-
-x_tmp = position(1:end-1, 2:end, :, 1); x_tmp = x_tmp(:);
-y_tmp = position(1:end-1, 2:end, :, 2); y_tmp = y_tmp(:);
-z_tmp = position(1:end-1, 2:end, :, 3); z_tmp = z_tmp(:);
-u_tmp = yx_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = yx_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = yx_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
+towards = position(2:end, 1:end-1, :, :);
+base = position(1:end-1, 2:end, :, :);
+add_quiver3_dircon(towards, base)
+yx_direction = towards - base;
 
 %% yz forces
 
-yz_direction = position(:, 2:end, 2:end, :) - position(:, 1:end-1, 1:end-1, :);
+towards = position(:, 2:end, 2:end, :);
+base = position(:, 1:end-1, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+yz_direction = towards - base;
 
-x_tmp = position(:, 1:end-1, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(:, 1:end-1, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(:, 1:end-1, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = yz_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = yz_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = yz_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
 
-zy_direction = position(:, 1:end-1, 2:end, :) - position(:, 2:end, 1:end-1, :);
+towards = position(:, 1:end-1, 2:end, :);
+base = position(:, 2:end, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+zy_direction = towards - base;
 
-x_tmp = position(:, 2:end, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(:, 2:end, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(:, 2:end, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = zy_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = zy_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = zy_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
 
 %% zx forces
 
-zx_direction = position(2:end, :, 2:end, :) - position(1:end-1, :, 1:end-1, :);
+towards = position(2:end, :, 2:end, :);
+base = position(1:end-1, :, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+zx_direction = towards - base;
 
-x_tmp = position(1:end-1, :, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(1:end-1, :, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(1:end-1, :, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = zx_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = zx_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = zx_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
 
-xz_direction = position(1:end-1, :, 2:end, :) - position(2:end, :, 1:end-1, :);
 
-x_tmp = position(2:end, :, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(2:end, :, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(2:end, :, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = xz_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = xz_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = xz_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
+towards = position(1:end-1, :, 2:end, :);
+base = position(2:end, :, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+xz_direction = towards - base;
+
 
 %% xyz forces
 
-xyz_direction = position(2:end, 2:end, 2:end, :) - position(1:end-1, 1:end-1, 1:end-1, :);
 
-x_tmp = position(1:end-1, 1:end-1, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(1:end-1, 1:end-1, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(1:end-1, 1:end-1, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = xyz_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = xyz_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = xyz_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
+towards = position(2:end, 2:end, 2:end, :);
+base = position(1:end-1, 1:end-1, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+xyz_direction = towards - base;
 
-yxz_direction = position(2:end, 1:end-1, 2:end, :) - position(1:end-1, 2:end, 1:end-1, :);
 
-x_tmp = position(1:end-1, 2:end, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(1:end-1, 2:end, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(1:end-1, 2:end, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = yxz_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = yxz_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = yxz_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
+towards = position(2:end, 1:end-1, 2:end, :);
+base = position(1:end-1, 2:end, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+yxz_direction = towards - base;
 
-zxy_direction = position(1:end-1, 2:end, 2:end, :) - position(2:end, 1:end-1, 1:end-1, :);
 
-x_tmp = position(2:end, 1:end-1, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(2:end, 1:end-1, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(2:end, 1:end-1, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = zxy_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = zxy_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = zxy_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
+towards = position(1:end-1, 2:end, 2:end, :);
+base = position(2:end, 1:end-1, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+zxy_direction = towards - base;
 
-zyx_direction = position(1:end-1, 1:end-1, 2:end, :) - position(2:end, 2:end, 1:end-1, :);
 
-x_tmp = position(2:end, 2:end, 1:end-1, 1); x_tmp = x_tmp(:);
-y_tmp = position(2:end, 2:end, 1:end-1, 2); y_tmp = y_tmp(:);
-z_tmp = position(2:end, 2:end, 1:end-1, 3); z_tmp = z_tmp(:);
-u_tmp = zyx_direction(:, :, :, 1); u_tmp = u_tmp(:);
-v_tmp = zyx_direction(:, :, :, 2); v_tmp = v_tmp(:);
-w_tmp = zyx_direction(:, :, :, 3); w_tmp = w_tmp(:);
-hold on
-quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-hold off
+towards = position(1:end-1, 1:end-1, 2:end, :);
+base = position(2:end, 2:end, 1:end-1, :);
+add_quiver3_dircon(towards, base)
+zyx_direction = towards - base;
 
 
 
