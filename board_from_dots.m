@@ -3,7 +3,7 @@
 
 clear all
 
-m = 20;
+m = 0.13;
 g = 9.8;
 
 row_num = 10;
@@ -67,7 +67,7 @@ spring_force_fcn = @(position) spring_force(position, dir_config, k);
 dumper_force_fcn = @(velocity) - c * velocity;
 
 z_min = min(position_init(:, :, :, 3), [], 'all');
-ground_force_fcn = @(t, position) ground_force(position, z_min + t/15, 4, 40);
+ground_force_fcn = @(t, position) ground_force(position, z_min + t/15, 10, 40);
 external_force = zeros(size(position_init));
 
 external_force_fcn = @(position, velocity) external_force;
