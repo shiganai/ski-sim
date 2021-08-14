@@ -58,7 +58,7 @@ dir_config = set_init_length(position_init, dir_config);
 %% at times
 
 
-time = 0:1e-2:100; time = time';
+time = 0:1e-2:10; time = time';
 
 q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
     reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
@@ -68,15 +68,13 @@ dumper_force_fcn = @(velocity) - c * velocity;
 
 z_min = min(position_init(:, :, :, 1), [], 'all');
 ground_force_fcn = @(t, position) ground_force(position, z_min + t/15, 1, 10);
-
 external_force = zeros(size(position_init));
-% external_force = ones(size(position_init));
-% external_force(:, :, :, 1) = 0;
-% external_force(:, :, :, 3) = -external_force(:, :, :, 3);
 
 external_force_fcn = @(position, velocity) external_force;
 % external_force_fcn = @(position, velocity) external_force_wall(position, 9, 'smaller', 10, 10)...
 %     + external_force;
+
+%{
 
 ode_fcn = @(t, q) ddt_bfd(t, q, row_num, col_num, stair_num, ...
     spring_force_fcn, dumper_force_fcn, ground_force_fcn, external_force_fcn);
@@ -86,6 +84,22 @@ event_fcn = @(t, q) event_gf(t, q, row_num, col_num, stair_num, ground_force_fcn
 ode_option = odeset('Events', event_fcn);
 
 [time, q] = ode45(ode_fcn, time, q0, ode_option);
+%}
+
+q = NaN(size(time, 1), size(q0, 1));
+q(1,:) = q0;
+value = NaN(size(time, 1), 1);
+
+for time_index = 2:size(time, 1)
+    time_tmp = time(time_index);
+    q_tmp = q(time_index-1, :)';
+    dotq = ddt_bfd(time_tmp, q_tmp, row_num, col_num, stair_num, ...
+        spring_force_fcn, dumper_force_fcn, ground_force_fcn, external_force_fcn);
+    
+    [value(time_index), isterminal, direction] = event_gf(time_tmp, q_tmp, row_num, col_num, stair_num, ground_force_fcn, m, g);
+    
+    q(time_index, :) = q_tmp + dotq * diff(time(1:2));
+end
 
 position = NaN(row_num, col_num, stair_num, 3, size(time, 1));
 x_array = NaN(size(time, 1), row_num * col_num * stair_num + 4);
