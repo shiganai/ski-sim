@@ -8,26 +8,26 @@ row_num = 4;
 stair_num = 3;
 k = 200;
 m = 1;
-c = 50;
+c = 30;
 
 position_init = NaN(row_num, col_num, stair_num, 3);
 velocity_init = zeros(size(position_init));
 
 position_init(:, :, :, 1) = ones(1, col_num, stair_num) .* (1:row_num)';
 position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num);
-matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 0.5;
+matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 1;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
-alpha = 1/6 * pi;
+alpha = 0/6 * pi;
 R = [
     1, 0, 0;
     0, cos(alpha), -sin(alpha);
     0, sin(alpha), cos(alpha);
     ];
 
-for row_index = 1:row_num
+for stair_index = 1:stair_num
     for col_index = 1:col_num
-        for stair_index = 1:stair_num
+        for row_index = 1:row_num
             vec_tmp = reshape(position_init(row_index, col_index, stair_index, :), 3, 1);
             vec_tmp = R * vec_tmp;
             position_init(row_index, col_index, stair_index, :) = reshape(vec_tmp, 1, 1, 1, 3);
@@ -35,6 +35,25 @@ for row_index = 1:row_num
     end
 end
 
+dir_config = {
+    [1, 0, 0], {};
+    [0, 1, 0], {};
+    [0, 0, 1], {};
+    [1, 1, 0], {};
+    [1, -1, 0], {};
+    [0, 1, 1], {};
+    [0, -1, 1], {};
+    [1, 0, 1], {};
+    [-1, 0, 1], {};
+    [1, 1, 1], {};
+    [1, -1, 1], {};
+    [-1, 1, 1], {};
+    [-1, -1, 1], {};
+    };
+
+dir_config = set_init_length(position_init, dir_config);
+
+%{
 %% straight forces
 
 x_direction_init = calc_dir_and_force(position_init, 1, 0, 0);
@@ -83,11 +102,12 @@ zxy_length_init = vecnorm(zxy_direction_init, 2, 4);
 
 zyx_direction_init = calc_dir_and_force(position_init, -1, -1, 1);
 zyx_length_init = vecnorm(zyx_direction_init, 2, 4);
+%}
 
 %% at times
 
 
-time = 0:1e-2:20; time = time';
+time = 0:1e-2:3; time = time';
 
 % position = position_init + rand(size(position_init)) * 0.3;
 position = position_init;
@@ -96,7 +116,7 @@ position = position_init;
 velocity = velocity_init;
 
 external_force = zeros(size(position));
-external_force(:, :, :, 3) = external_force(:, :, :, 3) - 9.8;
+external_force(:, :, :, 3) = external_force(:, :, :, 3) - 9.8 * m;
 % external_force(1,1,2,3) = 10;
 
 x_tmp = position(:, :, :, 1); x_tmp = x_tmp(:);
@@ -107,7 +127,7 @@ xlabel('X')
 ylabel('Y')
 zlabel('Z')
 xlim([0, 5])
-ylim([-1, 2])
+ylim([-1, 3])
 zlim([0, 4])
 daspect(ones(1,3))
 view([1,0.1,0])
@@ -122,9 +142,11 @@ hold off
 
 for time_index = 1:size(time, 1)
     
+    spring_force = calc_spring_force(position, dir_config, k);
+    ground_force = calc_ground_force(position, 1.2, 10, 10);
     
+    %{
     spring_force = zeros(size(position));
-    ground_force = calc_ground_force(position, 1.2, 10, 1);
     
     %% straight forces
     
@@ -153,6 +175,7 @@ for time_index = 1:size(time, 1)
     [~, spring_force] = calc_dir_and_force(position, 1, -1, 1, yxz_length_init, spring_force, k);
     [~, spring_force] = calc_dir_and_force(position, -1, 1, 1, zxy_length_init, spring_force, k);
     [~, spring_force] = calc_dir_and_force(position, -1, -1, 1, zyx_length_init, spring_force, k);
+    %}
     
     %%
 %     
