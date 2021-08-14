@@ -39,7 +39,7 @@ edge_in_xyz_fcn = matlabFunction(edge_in_xyz);
 opposite_edge_in_xyz_fcn = matlabFunction(opposite_edge_in_xyz);
 
 % alpha_all = [4]/32 * pi; alpha_all = alpha_all';
-alpha_all = [15.9, 12, 10, 8, 4]/32 * pi; alpha_all = alpha_all';
+alpha_all = [15.9, 12, 10, 8, 4, 1.5]/32 * pi; alpha_all = alpha_all';
 l = -1:1e-2:1; l = l';
 
 ax_curvature = matlab.graphics.axis.Axes.empty(size(alpha_all, 1), 0);
@@ -89,7 +89,7 @@ for alpha_index = 1:size(alpha_all, 1)
     end
 end
 
-ylim_min = inf;
+ylim_min = 0;
 ylim_max = -inf;
 for ax_curvature_index = 1:size(ax_curvature, 1)
     ax_curvature_tmp = ax_curvature(ax_curvature_index);
