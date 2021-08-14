@@ -4,8 +4,8 @@
 clear all
 
 row_num = 4;
-col_num = 2;
-stair_num = 3;
+col_num = 10;
+stair_num = 2;
 k = 200;
 m = 1;
 c = 30;
@@ -18,7 +18,7 @@ position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num);
 matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 1;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
-alpha = 0/6 * pi;
+alpha = 1/6 * pi;
 R = [
     1, 0, 0;
     0, cos(alpha), -sin(alpha);
@@ -56,15 +56,21 @@ dir_config = set_init_length(position_init, dir_config);
 %% at times
 
 
-time = 0:1e-2:30; time = time';
+time = 0:1e-2:100; time = time';
 
 q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
     reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
 
 spring_force_fcn = @(position) calc_spring_force(position, dir_config, k);
-ground_force_fcn = @(position) calc_ground_force(position, 1.2, 10, 10);
+ground_force_fcn = @(position) calc_ground_force(position, 1.5, 10, 10);
 dumper_force_fcn = @(velocity) - c * velocity;
-external_force_fcn = @(position) zeros(size(position));
+
+external_force = ones(size(position_init));
+external_force(:, :, :, 1) = 0;
+external_force(:, :, :, 3) = -external_force(:, :, :, 3);
+
+external_force_fcn = @(position, velocity) calc_external_force_wall(position, 9, 'smaller', 10, 10)...
+    + external_force;
 
 ode_fcn = @(t, q) ddt_bfd(t, q, row_num, col_num, stair_num, ...
     spring_force_fcn, dumper_force_fcn, ground_force_fcn, external_force_fcn);
@@ -87,10 +93,11 @@ for q_index = 1:size(q, 1)
 end
 
 anime = SimplestAnime_scatter(time, x_array, y_array, z_array);
-anime.axAnime.XLim = [0, 5];
-anime.axAnime.YLim = [0, 3];
-anime.axAnime.ZLim = [0, 4];
+anime.axAnime.XLim = [min(x_array, [], 'all'), max(x_array, [], 'all')];
+anime.axAnime.YLim = [min(y_array, [], 'all'), max(y_array, [], 'all')];
+anime.axAnime.ZLim = [min(z_array, [], 'all'), max(z_array, [], 'all')];
 view(anime.axAnime, [1,1,1])
+daspect(anime.axAnime, [1,1,1])
 
 
 
