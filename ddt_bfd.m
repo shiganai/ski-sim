@@ -8,7 +8,7 @@ velocity = reshape(q(point_num + 1:2 * point_num), row_num, col_num, stair_num, 
 spring_force = spring_force_fcn(position);
 dumper_force = dumper_force_fcn(velocity);
 ground_force = ground_force_fcn(position);
-external_force = external_force_fcn(position);
+external_force = external_force_fcn(position, velocity);
 
 force = spring_force + dumper_force + ground_force + external_force;
 
