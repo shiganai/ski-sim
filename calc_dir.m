@@ -1,4 +1,8 @@
-function [direction, force] = calc_dir_and_force(position, xdir, ydir, zdir, length_init, force, k)
+function direction = calc_dir(position, dir_array)
+
+xdir = dir_array(1);
+ydir = dir_array(2);
+zdir = dir_array(3);
 
 if xdir > 0
     towards_x = 1 + xdir : size(position, 1);
@@ -26,13 +30,6 @@ end
 
 direction = position(towards_x, towards_y, towards_z, :) ...
     - position(base_x, base_y, base_z, :);
-
-if nargin >= 5 && nargout >= 2
-    length = vecnorm(direction, 2, 4);
-    force_tmp = -k * direction .* (length - length_init);
-    force(towards_x, towards_y, towards_z, :) = force(towards_x, towards_y, towards_z, :) + force_tmp;
-    force(base_x, base_y, base_z, :) = force(base_x, base_y, base_z, :) - force_tmp;
-end
 
 end
 
