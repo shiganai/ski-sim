@@ -1,4 +1,4 @@
-function external_force = calc_external_force_wall(position, limitation, mode, buffer, power)
+function external_force = external_force_wall(position, velocity, limitation, mode, buffer, power, myu)
 
     
 position_y = position(:, :, :, 2);

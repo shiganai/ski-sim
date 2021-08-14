@@ -4,21 +4,22 @@
 clear all
 
 row_num = 4;
-col_num = 20;
+col_num = 5;
 stair_num = 3;
-k = 200;
+k = 20;
 m = 1;
-c = 30;
+c = 3;
+myu = 0.1;
 
 position_init = NaN(row_num, col_num, stair_num, 3);
 velocity_init = zeros(size(position_init));
 
 position_init(:, :, :, 1) = ones(1, col_num, stair_num) .* (1:row_num)';
-position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num) / 2;
+position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num);
 matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 1;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
-alpha = 1/6 * pi;
+alpha = 0/6 * pi;
 R = [
     1, 0, 0;
     0, cos(alpha), -sin(alpha);
@@ -39,12 +40,12 @@ dir_config = {
     [1, 0, 0], {};
     [0, 1, 0], {};
     [0, 0, 1], {};
-    [1, 1, 0], {};
-    [1, -1, 0], {};
-    [0, 1, 1], {};
-    [0, -1, 1], {};
-    [1, 0, 1], {};
-    [-1, 0, 1], {};
+%     [1, 1, 0], {};
+%     [1, -1, 0], {};
+%     [0, 1, 1], {};
+%     [0, -1, 1], {};
+%     [1, 0, 1], {};
+%     [-1, 0, 1], {};
     [1, 1, 1], {};
     [1, -1, 1], {};
     [-1, 1, 1], {};
@@ -56,20 +57,20 @@ dir_config = set_init_length(position_init, dir_config);
 %% at times
 
 
-time = 0:1e-2:100; time = time';
+time = 0:1e-2:1; time = time';
 
 q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
     reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
 
-spring_force_fcn = @(position) calc_spring_force(position, dir_config, k);
-ground_force_fcn = @(position) calc_ground_force(position, 1.5, 10, 10);
-dumper_force_fcn = @(velocity) - c * velocity;
+spring_force_fcn = @(position, velocity) spring_force(position, dir_config, k);
+ground_force_fcn = @(position, velocity) ground_force(position, velocity, 1, 10, 10, myu);
+dumper_force_fcn = @(position, velocity) - c * velocity;
 
 external_force = ones(size(position_init));
 external_force(:, :, :, 1) = 0;
 external_force(:, :, :, 3) = -external_force(:, :, :, 3);
 
-external_force_fcn = @(position, velocity) calc_external_force_wall(position, 9, 'smaller', 10, 10)...
+external_force_fcn = @(position, velocity) external_force_wall(position, velocity, 10, 'smaller', 10, 10, myu)...
     + external_force;
 
 ode_fcn = @(t, q) ddt_bfd(t, q, row_num, col_num, stair_num, ...

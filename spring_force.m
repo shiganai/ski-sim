@@ -1,8 +1,9 @@
-function spring_force = calc_spring_force(position, dir_config, k)
+function spring_force = spring_force(position, dir_config, k)
 
 spring_force = zeros(size(position));
 
 for dir_config_index = 1:size(dir_config, 1)
+    
     dir_array = dir_config{dir_config_index, 1};
     
     length_init = dir_config{dir_config_index, 2};
