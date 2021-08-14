@@ -38,7 +38,7 @@ edge_in_xyz_fcn = matlabFunction(edge_in_xyz);
 opposite_edge_in_xyz_fcn = matlabFunction(opposite_edge_in_xyz);
 
 % alpha_all = [4]/32 * pi; alpha_all = alpha_all';
-alpha_all = [16, 12, 8, 4, 3]/32 * pi; alpha_all = alpha_all';
+alpha_all = [16, 12, 10, 8, 4]/32 * pi; alpha_all = alpha_all';
 l = -1:1e-2:1; l = l';
 
 for alpha_index = 1:size(alpha_all, 1)
