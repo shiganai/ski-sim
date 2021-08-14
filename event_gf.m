@@ -9,7 +9,7 @@ ground_force = sum(ground_force, 'all');
 
 value = ground_force - m * g;
 isterminal = 1;
-direction = 1;
+direction = 0;
 
 end
 
