@@ -58,7 +58,7 @@ dir_config = set_init_length(position_init, dir_config);
 %% at times
 
 
-time = 0:1e-2:10; time = time';
+time = 0:1e-2:20; time = time';
 
 q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
     reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
@@ -100,6 +100,8 @@ for time_index = 2:size(time, 1)
     
     q(time_index, :) = q_tmp + dotq * diff(time(1:2));
 end
+
+plot(time, value)
 %}
 
 position = NaN(row_num, col_num, stair_num, 3, size(time, 1));
@@ -137,8 +139,6 @@ anime.pAnimes(end-3).MarkerFaceColor = 'blue';
 anime.pAnimes(end-2).MarkerFaceColor = 'blue';
 anime.pAnimes(end-1).MarkerFaceColor = 'blue';
 anime.pAnimes(end-0).MarkerFaceColor = 'blue';
-
-plot(time, value)
 
 
 
