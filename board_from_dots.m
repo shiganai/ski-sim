@@ -56,7 +56,7 @@ dir_config = set_init_length(position_init, dir_config);
 %% at times
 
 
-time = 0:1e-2:3; time = time';
+time = 0:1e-2:30; time = time';
 
 q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
     reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
