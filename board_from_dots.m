@@ -6,8 +6,8 @@ clear all
 m = 0.13;
 g = 9.8;
 
-row_num = 10;
-col_num = 5;
+row_num = 40;
+col_num = 10;
 stair_num = 3;
 k = 320;
 c = 1;
@@ -15,8 +15,8 @@ c = 1;
 position_init = NaN(row_num, col_num, stair_num, 3);
 velocity_init = zeros(size(position_init));
 
-position_init(:, :, :, 1) = ones(1, col_num, stair_num) .* (1:row_num)';
-position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num);
+position_init(:, :, :, 1) = ones(1, col_num, stair_num) .* (1:row_num)' * 2;
+position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num) / 4;
 matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 0.3;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
@@ -128,6 +128,7 @@ y_array(:, [end-1, end]) = max(y_array, [], 'all', 'omitnan') + 0.1;
 z_array(:, [end-3, end]) = [1, 1] .* (z_min + time/15);
 z_array(:, [end-2, end-1]) = [1, 1] .* (z_min + time/15);
 
+%{
 anime = SimplestAnime_scatter(time, x_array, y_array, z_array);
 anime.axAnime.XLim = [min(x_array, [], 'all'), max(x_array, [], 'all')];
 anime.axAnime.YLim = [min(y_array, [], 'all'), max(y_array, [], 'all')];
@@ -150,6 +151,7 @@ anime.pAnimes(end-3).MarkerFaceColor = 'blue';
 anime.pAnimes(end-2).MarkerFaceColor = 'blue';
 anime.pAnimes(end-1).MarkerFaceColor = 'blue';
 anime.pAnimes(end-0).MarkerFaceColor = 'blue';
+%}
 
 position_end = position(:, :, :, :, end);
 ground_force_end = ground_force_fcn(time(end), position_end);
