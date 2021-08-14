@@ -3,8 +3,8 @@
 
 clear all
 
-col_num = 2;
 row_num = 4;
+col_num = 2;
 stair_num = 3;
 k = 200;
 m = 1;
@@ -58,6 +58,42 @@ dir_config = set_init_length(position_init, dir_config);
 
 time = 0:1e-2:3; time = time';
 
+q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
+    reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
+
+spring_force_fcn = @(position) calc_spring_force(position, dir_config, k);
+ground_force_fcn = @(position) calc_ground_force(position, 1.2, 10, 10);
+dumper_force_fcn = @(velocity) - c * velocity;
+external_force_fcn = @(position) zeros(size(position));
+
+ode_fcn = @(t, q) ddt_bfd(t, q, row_num, col_num, stair_num, ...
+    spring_force_fcn, dumper_force_fcn, ground_force_fcn, external_force_fcn);
+
+[time, q] = ode45(ode_fcn, time, q0);
+
+position = NaN(row_num, col_num, stair_num, 3, size(time, 1));
+x_array = NaN(size(time, 1), row_num * col_num * stair_num);
+y_array = NaN(size(x_array));
+z_array = NaN(size(x_array));
+
+for q_index = 1:size(q, 1)
+    position_tmp = reshape(q(q_index, 1:row_num * col_num * stair_num * 3), ...
+        row_num, col_num, stair_num, 3);
+    position(:, :, :, :, q_index) = position_tmp;
+    
+    x_array(q_index, :) = reshape(position_tmp(:, :, :, 1), 1, row_num * col_num * stair_num);
+    y_array(q_index, :) = reshape(position_tmp(:, :, :, 2), 1, row_num * col_num * stair_num);
+    z_array(q_index, :) = reshape(position_tmp(:, :, :, 3), 1, row_num * col_num * stair_num); 
+end
+
+anime = SimplestAnime_scatter(time, x_array, y_array, z_array);
+anime.axAnime.XLim = [0, 5];
+anime.axAnime.YLim = [0, 3];
+anime.axAnime.ZLim = [0, 4];
+view(anime.axAnime, [1,1,1])
+
+
+%{
 % position = position_init + rand(size(position_init)) * 0.3;
 position = position_init;
 % position(:, :, :, 3) = position(:, :, :, 3) + ones(1, col_num, stair_num) .* (((1:row_num)'-3)/2).^2;
@@ -121,6 +157,7 @@ for time_index = 1:size(time, 1)
     drawnow
     
 end
+%}
 
 
 
