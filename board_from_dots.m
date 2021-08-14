@@ -53,57 +53,6 @@ dir_config = {
 
 dir_config = set_init_length(position_init, dir_config);
 
-%{
-%% straight forces
-
-x_direction_init = calc_dir_and_force(position_init, 1, 0, 0);
-x_length_init = vecnorm(x_direction_init, 2, 4);
-
-y_direction_init = calc_dir_and_force(position_init, 0, 1, 0);
-y_length_init = vecnorm(y_direction_init, 2, 4);
-
-z_direction_init = calc_dir_and_force(position_init, 0, 0, 1);
-z_length_init = vecnorm(z_direction_init, 2, 4);
-
-%% xy forces
-
-xy_direction_init = calc_dir_and_force(position_init, 1, 1, 0);
-xy_length_init = vecnorm(xy_direction_init, 2, 4);
-
-yx_direction_init = calc_dir_and_force(position_init, 1, -1, 0);
-yx_length_init = vecnorm(yx_direction_init, 2, 4);
-
-%% yz forces
-
-yz_direction_init = calc_dir_and_force(position_init, 0, 1, 1);
-yz_length_init = vecnorm(yz_direction_init, 2, 4);
-
-zy_direction_init = calc_dir_and_force(position_init, 0, -1, 1);
-zy_length_init = vecnorm(zy_direction_init, 2, 4);
-
-%% zx forces
-
-zx_direction_init = calc_dir_and_force(position_init, 1, 0, 1);
-zx_length_init = vecnorm(zx_direction_init, 2, 4);
-
-xz_direction_init = calc_dir_and_force(position_init, -1, 0, 1);
-xz_length_init = vecnorm(xz_direction_init, 2, 4);
-
-%% xyz forces
-
-xyz_direction_init = calc_dir_and_force(position_init, 1, 1, 1);
-xyz_length_init = vecnorm(xyz_direction_init, 2, 4);
-
-yxz_direction_init = calc_dir_and_force(position_init, 1, -1, 1);
-yxz_length_init = vecnorm(yxz_direction_init, 2, 4);
-
-zxy_direction_init = calc_dir_and_force(position_init, -1, 1, 1);
-zxy_length_init = vecnorm(zxy_direction_init, 2, 4);
-
-zyx_direction_init = calc_dir_and_force(position_init, -1, -1, 1);
-zyx_length_init = vecnorm(zyx_direction_init, 2, 4);
-%}
-
 %% at times
 
 
@@ -145,40 +94,6 @@ for time_index = 1:size(time, 1)
     spring_force = calc_spring_force(position, dir_config, k);
     ground_force = calc_ground_force(position, 1.2, 10, 10);
     
-    %{
-    spring_force = zeros(size(position));
-    
-    %% straight forces
-    
-    [~, spring_force] = calc_dir_and_force(position, 1, 0, 0, x_length_init, spring_force, k);
-    [~, spring_force] = calc_dir_and_force(position, 0, 1, 0, y_length_init, spring_force, k);
-    [~, spring_force] = calc_dir_and_force(position, 0, 0, 1, z_length_init, spring_force, k);
-    
-    %% xy forces
-    
-    [~, spring_force] = calc_dir_and_force(position, 1, 1, 0, xy_length_init, spring_force, k);
-    [~, spring_force] = calc_dir_and_force(position, 1, -1, 0, yx_length_init, spring_force, k);
-    
-    %% yz forces
-    
-    [~, spring_force] = calc_dir_and_force(position, 0, 1, 1, yz_length_init, spring_force, k);
-    [~, spring_force] = calc_dir_and_force(position, 0, -1, 1, zy_length_init, spring_force, k);
-    
-    %% zx forces
-    
-    [~, spring_force] = calc_dir_and_force(position, 1, 0, 1, zx_length_init, spring_force, k);
-    [~, spring_force] = calc_dir_and_force(position, -1, 0, 1, xz_length_init, spring_force, k);
-    
-    %% xyz forces
-    
-    [~, spring_force] = calc_dir_and_force(position, 1, 1, 1, xyz_length_init, spring_force, k);
-    [~, spring_force] = calc_dir_and_force(position, 1, -1, 1, yxz_length_init, spring_force, k);
-    [~, spring_force] = calc_dir_and_force(position, -1, 1, 1, zxy_length_init, spring_force, k);
-    [~, spring_force] = calc_dir_and_force(position, -1, -1, 1, zyx_length_init, spring_force, k);
-    %}
-    
-    %%
-%     
     force = spring_force - c * velocity + ground_force + external_force;
     
     position = position + velocity .* diff(time(1:2));
