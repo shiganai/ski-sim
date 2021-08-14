@@ -9,7 +9,7 @@ g = 9.8;
 row_num = 40;
 col_num = 10;
 stair_num = 3;
-k = 320;
+k = 2000;
 c = 1;
 
 position_init = NaN(row_num, col_num, stair_num, 3);
@@ -20,7 +20,12 @@ position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num) / 4;
 matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 0.3;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
-alpha = 1/16 * pi;
+for row_index = 1:row_num
+    width = ((row_index/row_num - 1/2) * 2)^2 + 1;
+    position_init(row_index, :, :, 2) = ones(1, 1, stair_num) .* linspace(-width, width, col_num)';
+end
+
+alpha = 3/16 * pi;
 R = [
     1, 0, 0;
     0, cos(alpha), -sin(alpha);
@@ -55,10 +60,20 @@ dir_config = {
 
 dir_config = set_init_length(position_init, dir_config);
 
+x_tmp = position_init(:, :, :, 1); x_tmp = x_tmp(:);
+y_tmp = position_init(:, :, :, 2); y_tmp = y_tmp(:);
+z_tmp = position_init(:, :, :, 3); z_tmp = z_tmp(:);
+scatter3(x_tmp, y_tmp, z_tmp)
+xlabel('X')
+ylabel('Y')
+zlabel('Z')
+daspect(ones(1,3))
+
 %% at times
 
+time = 0:1e-2:30; time = time';
 
-time = 0:1e-2:20; time = time';
+elevation_speed = 1/10;
 
 q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
     reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
@@ -67,7 +82,7 @@ spring_force_fcn = @(position) spring_force(position, dir_config, k);
 dumper_force_fcn = @(velocity) - c * velocity;
 
 z_min = min(position_init(:, :, :, 3), [], 'all');
-ground_force_fcn = @(t, position) ground_force(position, z_min + t/15, 10, 40);
+ground_force_fcn = @(t, position) ground_force(position, z_min + t * elevation_speed, 10, 40);
 external_force = zeros(size(position_init));
 
 external_force_fcn = @(position, velocity) external_force;
@@ -133,7 +148,7 @@ anime = SimplestAnime_scatter(time, x_array, y_array, z_array);
 anime.axAnime.XLim = [min(x_array, [], 'all'), max(x_array, [], 'all')];
 anime.axAnime.YLim = [min(y_array, [], 'all'), max(y_array, [], 'all')];
 anime.axAnime.ZLim = [min(z_array, [], 'all'), max(z_array, [], 'all')];
-view(anime.axAnime, [1,0.1,0])
+view(anime.axAnime, [0,0.1,1])
 daspect(anime.axAnime, [1,1,1])
 
 % target_index_array = find(z_array(1,:) == position_init(1,1,1,3));
@@ -158,9 +173,11 @@ ground_force_end = ground_force_fcn(time(end), position_end);
 
 add_quiver3_force(position_end, ground_force_end)
 hold on
-surf(x_array(end, end-3:end), y_array(end, end-3:end), ones(4,4) * (z_min + time(end)/15))
+surf(x_array(end, end-3:end), y_array(end, end-3:end), ones(4,4) * (z_min + time(end) * elevation_speed))
 hold off
 view([1,0,0])
+
+time(end)
 
 
 
