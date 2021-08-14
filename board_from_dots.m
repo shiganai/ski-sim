@@ -61,15 +61,15 @@ time = 0:1e-2:100; time = time';
 q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
     reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
 
-spring_force_fcn = @(position) calc_spring_force(position, dir_config, k);
-ground_force_fcn = @(position) calc_ground_force(position, 1.5, 10, 10);
+spring_force_fcn = @(position) spring_force(position, dir_config, k);
+ground_force_fcn = @(position) ground_force(position, 1.5, 10, 10);
 dumper_force_fcn = @(velocity) - c * velocity;
 
 external_force = ones(size(position_init));
 external_force(:, :, :, 1) = 0;
 external_force(:, :, :, 3) = -external_force(:, :, :, 3);
 
-external_force_fcn = @(position, velocity) calc_external_force_wall(position, 9, 'smaller', 10, 10)...
+external_force_fcn = @(position, velocity) external_force_wall(position, 9, 'smaller', 10, 10)...
     + external_force;
 
 ode_fcn = @(t, q) ddt_bfd(t, q, row_num, col_num, stair_num, ...
