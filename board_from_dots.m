@@ -21,11 +21,11 @@ matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 0.3;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
 for row_index = 1:row_num
-    width = ((row_index/row_num - 1/2) * 2)^2 + 1;
+    width = ((row_index/row_num - 1/2) * 1)^2 + 1;
     position_init(row_index, :, :, 2) = ones(1, 1, stair_num) .* linspace(-width, width, col_num)';
 end
 
-alpha = 3/16 * pi;
+alpha = 2/16 * pi;
 R = [
     1, 0, 0;
     0, cos(alpha), -sin(alpha);
