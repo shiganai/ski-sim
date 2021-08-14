@@ -1,4 +1,4 @@
-function spring_force = calc_spring_force(position, dir_config, k)
+function spring_force = spring_force(position, dir_config, k)
 
 spring_force = zeros(size(position));
 
