@@ -18,6 +18,23 @@ position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num);
 matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 0.5;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
+alpha = 1/6 * pi;
+R = [
+    1, 0, 0;
+    0, cos(alpha), -sin(alpha);
+    0, sin(alpha), cos(alpha);
+    ];
+
+for row_index = 1:row_num
+    for col_index = 1:col_num
+        for stair_index = 1:stair_num
+            vec_tmp = reshape(position_init(row_index, col_index, stair_index, :), 3, 1);
+            vec_tmp = R * vec_tmp;
+            position_init(row_index, col_index, stair_index, :) = reshape(vec_tmp, 1, 1, 1, 3);
+        end
+    end
+end
+
 %% straight forces
 
 x_direction_init = calc_dir_and_force(position_init, 1, 0, 0);
@@ -69,7 +86,7 @@ zyx_length_init = vecnorm(zyx_direction_init, 2, 4);
 
 %% at times
 
-% position = position_init + rand(size(position)) * 0.3;
+% position = position_init + rand(size(position_init)) * 0.3;
 position = position_init;
 % position(:, :, :, 3) = position(:, :, :, 3) + ones(1, col_num, stair_num) .* (((1:row_num)'-3)/2).^2;
 
