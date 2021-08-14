@@ -7,7 +7,7 @@ ground_force = ground_force_fcn(t, position);
 
 ground_force = sum(ground_force, 'all');
 
-value = ground_force - m * g;
+value = ground_force - m * g * row_num * col_num * stair_num;
 isterminal = 1;
 direction = 0;
 
