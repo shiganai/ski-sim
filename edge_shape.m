@@ -2,11 +2,12 @@
 clear all
 
 syms l alpha real
+assume(tan(alpha) > 0)
 
 func_length = 1/8 * l^2;
 
-% r = 100;
-% func_length = r * (1 - cos(l/r));
+r = 10;
+func_length = r * (1 - cos(l/r));
 
 yCenter_on_alpha = func_length / tan(alpha);
 
@@ -38,8 +39,10 @@ edge_in_xyz_fcn = matlabFunction(edge_in_xyz);
 opposite_edge_in_xyz_fcn = matlabFunction(opposite_edge_in_xyz);
 
 % alpha_all = [4]/32 * pi; alpha_all = alpha_all';
-alpha_all = [16, 12, 10, 8, 4]/32 * pi; alpha_all = alpha_all';
+alpha_all = [15.9, 12, 10, 8, 4]/32 * pi; alpha_all = alpha_all';
 l = -1:1e-2:1; l = l';
+
+ax_curvature = matlab.graphics.axis.Axes.empty(size(alpha_all, 1), 0);
 
 for alpha_index = 1:size(alpha_all, 1)
     
@@ -76,13 +79,27 @@ for alpha_index = 1:size(alpha_all, 1)
     
     curvature = fnval(curvature_dd, edge_in_xyz(:, 1)) ./ (1 + fnval(curvature_d, edge_in_xyz(:, 1)).^2).^(3/2);
     
-    subplot(2, size(alpha_all, 1), alpha_index + size(alpha_all, 1))
+    ax_curvature(alpha_index, 1) = subplot(2, size(alpha_all, 1), alpha_index + size(alpha_all, 1));
     plot(xCenter_on_alpha(alpha, l), curvature)
     ax = gca;
     ax.FontSize = 20;
     xlabel('l', 'Interpreter', 'latex')
-    ylabel('Curvature')
+    if alpha_index == 1
+        ylabel('Curvature')
+    end
 end
+
+ylim_min = inf;
+ylim_max = -inf;
+for ax_curvature_index = 1:size(ax_curvature, 1)
+    ax_curvature_tmp = ax_curvature(ax_curvature_index);
+    ylim_min = min([ylim_min, ax_curvature_tmp.YLim]);
+    ylim_max = max([ylim_max, ax_curvature_tmp.YLim]);
+end
+for ax_curvature_index = 1:size(ax_curvature, 1)
+    ax_curvature(ax_curvature_index).YLim = [ylim_min, ylim_max];
+end
+
 
 
 
