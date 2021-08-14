@@ -4,8 +4,8 @@
 clear all
 
 row_num = 4;
-col_num = 10;
-stair_num = 2;
+col_num = 20;
+stair_num = 3;
 k = 200;
 m = 1;
 c = 30;
@@ -14,7 +14,7 @@ position_init = NaN(row_num, col_num, stair_num, 3);
 velocity_init = zeros(size(position_init));
 
 position_init(:, :, :, 1) = ones(1, col_num, stair_num) .* (1:row_num)';
-position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num);
+position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num) / 2;
 matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 1;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
