@@ -21,11 +21,11 @@ matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 0.3;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
 for row_index = 1:row_num
-    width = ((row_index/row_num - 1/2) * 1)^2 + 1;
+    width = ((row_index/row_num - 1/2) * 2)^2 + 1;
     position_init(row_index, :, :, 2) = ones(1, 1, stair_num) .* linspace(-width, width, col_num)';
 end
 
-alpha = 2/16 * pi;
+alpha = 4/16 * pi;
 R = [
     1, 0, 0;
     0, cos(alpha), -sin(alpha);
@@ -171,6 +171,7 @@ anime.pAnimes(end-0).MarkerFaceColor = 'blue';
 position_end = position(:, :, :, :, end);
 ground_force_end = ground_force_fcn(time(end), position_end);
 
+figure(1)
 add_quiver3_force(position_end, ground_force_end)
 hold on
 surf(x_array(end, end-3:end), y_array(end, end-3:end), ones(4,4) * (z_min + time(end) * elevation_speed))
@@ -178,6 +179,24 @@ hold off
 view([1,0,0])
 
 time(end)
+
+center_gf = NaN(row_num, 2);
+for row_index = 1:row_num
+    ground_force_end_row_index = ground_force_end(row_index, :, :, 3);
+    
+    position_end_row_index = position_end(row_index, :, :, 1);
+    center_gf(row_index, 1) = sum(position_end_row_index .* ground_force_end_row_index, 'all', 'omitnan') / sum(ground_force_end_row_index, 'all', 'omitnan');
+    
+    position_end_row_index = position_end(row_index, :, :, 2);
+    center_gf(row_index, 2) = sum(position_end_row_index .* ground_force_end_row_index, 'all', 'omitnan') / sum(ground_force_end_row_index, 'all', 'omitnan');
+end
+
+
+figure(2)
+plot(center_gf(:, 2), center_gf(:, 1))
+ylim([min(x_array, [], 'all'), max(x_array, [], 'all')]);
+xlim([min(y_array, [], 'all'), max(y_array, [], 'all')]);
+daspect([1,1,1])
 
 
 
