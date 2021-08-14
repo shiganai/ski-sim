@@ -3,13 +3,13 @@
 
 clear all
 
-m = 1;
+m = 2;
 g = 9.8;
 
 row_num = 7;
 col_num = 7;
 stair_num = 3;
-k = 5;
+k = 10;
 c = 1;
 
 position_init = NaN(row_num, col_num, stair_num, 3);
@@ -115,7 +115,7 @@ anime = SimplestAnime_scatter(time, x_array, y_array, z_array);
 anime.axAnime.XLim = [min(x_array, [], 'all'), max(x_array, [], 'all')];
 anime.axAnime.YLim = [min(y_array, [], 'all'), max(y_array, [], 'all')];
 anime.axAnime.ZLim = [min(z_array, [], 'all'), max(z_array, [], 'all')];
-view(anime.axAnime, [1,1,1])
+view(anime.axAnime, [1,0.1,0])
 daspect(anime.axAnime, [1,1,1])
 
 anime.pAnimes(end-3).MarkerFaceColor = 'blue';

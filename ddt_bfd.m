@@ -12,7 +12,8 @@ external_force = external_force_fcn(position, velocity);
 
 force = spring_force + dumper_force + ground_force + external_force;
 
-velocity(:, :, stair_num, :) = 0;
+velocity(3:5, 3:5, stair_num, :) = 0;
+% velocity(ceil(row_num/2), ceil(col_num/2), stair_num, :) = 0;
 
 force = reshape(force, point_num, 1);
 velocity = reshape(velocity, point_num, 1);
