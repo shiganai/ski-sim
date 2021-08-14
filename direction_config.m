@@ -19,89 +19,23 @@ ylabel('Y')
 zlabel('Z')
 daspect(ones(1,3))
 
-%% straight forces
+dir_config = {
+    [1, 0, 0], {};
+    [0, 1, 0], {};
+    [0, 0, 1], {};
+    [1, 1, 0], {};
+    [1, -1, 0], {};
+    [0, 1, 1], {};
+    [0, -1, 1], {};
+    [1, 0, 1], {};
+    [-1, 0, 1], {};
+    [1, 1, 1], {};
+    [1, -1, 1], {};
+    [-1, 1, 1], {};
+    [-1, -1, 1], {};
+    };
 
-towards = position(2:end, :, :, :);
-base = position(1:end-1, :, :, :);
-x_direction = towards - base;
-add_quiver3_dircon(position_init, 1, 0, 0)
-
-towards = position(:, 2:end, :, :);
-base = position(:, 1:end-1, :, :);
-y_direction = towards - base;
-add_quiver3_dircon(position_init, 0, 1, 0)
-
-towards = position(:, :, 2:end, :);
-base = position(:, :, 1:end-1, :);
-z_direction = towards - base;
-add_quiver3_dircon(position_init, 0, 0, 1)
-
-%% xy forces
-
-towards = position(2:end, 2:end, :, :);
-base = position(1:end-1, 1:end-1, :, :);
-xy_direction = towards - base;
-add_quiver3_dircon(position_init, 1, 1, 0)
-
-towards = position(2:end, 1:end-1, :, :);
-base = position(1:end-1, 2:end, :, :);
-yx_direction = towards - base;
-add_quiver3_dircon(position_init, 1, -1, 0)
-
-%% yz forces
-
-towards = position(:, 2:end, 2:end, :);
-base = position(:, 1:end-1, 1:end-1, :);
-yz_direction = towards - base;
-add_quiver3_dircon(position_init, 0, 1, 1)
-
-
-towards = position(:, 1:end-1, 2:end, :);
-base = position(:, 2:end, 1:end-1, :);
-zy_direction = towards - base;
-add_quiver3_dircon(position_init, 0, -1, 1)
-
-
-%% zx forces
-
-towards = position(2:end, :, 2:end, :);
-base = position(1:end-1, :, 1:end-1, :);
-zx_direction = towards - base;
-add_quiver3_dircon(position_init, 1, 0, 1)
-
-
-
-towards = position(1:end-1, :, 2:end, :);
-base = position(2:end, :, 1:end-1, :);
-xz_direction = towards - base;
-add_quiver3_dircon(position_init, -1, 0, 1)
-
-
-%% xyz forces
-
-
-towards = position(2:end, 2:end, 2:end, :);
-base = position(1:end-1, 1:end-1, 1:end-1, :);
-xyz_direction = towards - base;
-add_quiver3_dircon(position_init, 1, 1, 1)
-
-
-towards = position(2:end, 1:end-1, 2:end, :);
-base = position(1:end-1, 2:end, 1:end-1, :);
-yxz_direction = towards - base;
-add_quiver3_dircon(position_init, 1, -1, 1)
-
-
-towards = position(1:end-1, 2:end, 2:end, :);
-base = position(2:end, 1:end-1, 1:end-1, :);
-add_quiver3_dircon(position_init, -1, 1, 1)
-zxy_direction = towards - base;
-
-
-towards = position(1:end-1, 1:end-1, 2:end, :);
-base = position(2:end, 2:end, 1:end-1, :);
-zyx_direction = towards - base;
-add_quiver3_dircon(position_init, -1, -1, 1)
+add_quiver3_dircon(position, dir_config)
 
 
 

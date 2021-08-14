@@ -1,7 +1,12 @@
-function add_quiver3_dircon(position, dir_config)
+function spring_force = calc_spring_force(position, dir_config, k)
+
+spring_force = zeros(size(position));
 
 for dir_config_index = 1:size(dir_config, 1)
     dir_array = dir_config{dir_config_index, 1};
+    
+    length_init = dir_config{dir_config_index, 2};
+    
     xdir = dir_array(1);
     ydir = dir_array(2);
     zdir = dir_array(3);
@@ -30,22 +35,16 @@ for dir_config_index = 1:size(dir_config, 1)
         towards_z = 1 : size(position, 3) + zdir;
     end
     
-    towards = position(towards_x, towards_y, towards_z, :);
-    base = position(base_x, base_y, base_z, :);
+    direction = position(towards_x, towards_y, towards_z, :) ...
+        - position(base_x, base_y, base_z, :);
     
-    target_direction = towards - base;
-    
-    x_tmp = base(:, :, :, 1); x_tmp = x_tmp(:);
-    y_tmp = base(:, :, :, 2); y_tmp = y_tmp(:);
-    z_tmp = base(:, :, :, 3); z_tmp = z_tmp(:);
-    u_tmp = target_direction(:, :, :, 1); u_tmp = u_tmp(:);
-    v_tmp = target_direction(:, :, :, 2); v_tmp = v_tmp(:);
-    w_tmp = target_direction(:, :, :, 3); w_tmp = w_tmp(:);
-    hold on
-    quiver3(x_tmp, y_tmp, z_tmp, u_tmp, v_tmp, w_tmp)
-    hold off
+    length = vecnorm(direction, 2, 4);
+    spring_force_tmp = -k * direction .* (length - length_init);
+    spring_force(towards_x, towards_y, towards_z, :) = ...
+        spring_force(towards_x, towards_y, towards_z, :) + spring_force_tmp;
+    spring_force(base_x, base_y, base_z, :) = ...
+        spring_force(base_x, base_y, base_z, :) - spring_force_tmp;
 end
-
 
 end
 
