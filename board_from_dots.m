@@ -3,12 +3,12 @@
 
 clear all
 
-col_num = 5;
-row_num = 5;
+col_num = 2;
+row_num = 4;
 stair_num = 3;
-k = 10;
+k = 200;
 m = 1;
-c = 5;
+c = 50;
 
 position_init = NaN(row_num, col_num, stair_num, 3);
 velocity_init = zeros(size(position_init));
@@ -86,11 +86,18 @@ zyx_length_init = vecnorm(zyx_direction_init, 2, 4);
 
 %% at times
 
+
+time = 0:1e-2:20; time = time';
+
 % position = position_init + rand(size(position_init)) * 0.3;
 position = position_init;
 % position(:, :, :, 3) = position(:, :, :, 3) + ones(1, col_num, stair_num) .* (((1:row_num)'-3)/2).^2;
 
 velocity = velocity_init;
+
+external_force = zeros(size(position));
+external_force(:, :, :, 3) = external_force(:, :, :, 3) - 9.8;
+% external_force(1,1,2,3) = 10;
 
 x_tmp = position(:, :, :, 1); x_tmp = x_tmp(:);
 y_tmp = position(:, :, :, 2); y_tmp = y_tmp(:);
@@ -99,53 +106,57 @@ scatp = scatter3(x_tmp, y_tmp, z_tmp, 10);
 xlabel('X')
 ylabel('Y')
 zlabel('Z')
-xlim([0, row_num + 1])
-ylim([0, col_num + 1])
-zlim([0, stair_num + 1])
+xlim([0, 5])
+ylim([-1, 2])
+zlim([0, 4])
 daspect(ones(1,3))
+view([1,0.1,0])
 
-time = 0:1e-2:10; time = time';
-
-    
-external_force = zeros(size(position));
-external_force(1,1,2,3) = 10;
+quiv_force = zeros(size(position));
+quiv_force_x_tmp = quiv_force(:, :, :, 1); quiv_force_x_tmp = quiv_force_x_tmp(:);
+quiv_force_y_tmp = quiv_force(:, :, :, 2); quiv_force_y_tmp = quiv_force_y_tmp(:);
+quiv_force_z_tmp = quiv_force(:, :, :, 3); quiv_force_z_tmp = quiv_force_z_tmp(:);
+hold on
+quiv = quiver3(x_tmp, y_tmp, z_tmp, quiv_force_x_tmp, quiv_force_y_tmp, quiv_force_z_tmp);
+hold off
 
 for time_index = 1:size(time, 1)
     
     
-    force = zeros(size(position));
+    spring_force = zeros(size(position));
+    ground_force = calc_ground_force(position, 1.2, 10, 1);
     
     %% straight forces
     
-    [~, force] = calc_dir_and_force(position, 1, 0, 0, x_length_init, force, k);
-    [~, force] = calc_dir_and_force(position, 0, 1, 0, y_length_init, force, k);
-    [~, force] = calc_dir_and_force(position, 0, 0, 1, z_length_init, force, k);
+    [~, spring_force] = calc_dir_and_force(position, 1, 0, 0, x_length_init, spring_force, k);
+    [~, spring_force] = calc_dir_and_force(position, 0, 1, 0, y_length_init, spring_force, k);
+    [~, spring_force] = calc_dir_and_force(position, 0, 0, 1, z_length_init, spring_force, k);
     
     %% xy forces
     
-    [~, force] = calc_dir_and_force(position, 1, 1, 0, xy_length_init, force, k);
-    [~, force] = calc_dir_and_force(position, 1, -1, 0, yx_length_init, force, k);
+    [~, spring_force] = calc_dir_and_force(position, 1, 1, 0, xy_length_init, spring_force, k);
+    [~, spring_force] = calc_dir_and_force(position, 1, -1, 0, yx_length_init, spring_force, k);
     
     %% yz forces
     
-    [~, force] = calc_dir_and_force(position, 0, 1, 1, yz_length_init, force, k);
-    [~, force] = calc_dir_and_force(position, 0, -1, 1, zy_length_init, force, k);
+    [~, spring_force] = calc_dir_and_force(position, 0, 1, 1, yz_length_init, spring_force, k);
+    [~, spring_force] = calc_dir_and_force(position, 0, -1, 1, zy_length_init, spring_force, k);
     
     %% zx forces
     
-    [~, force] = calc_dir_and_force(position, 1, 0, 1, zx_length_init, force, k);
-    [~, force] = calc_dir_and_force(position, -1, 0, 1, xz_length_init, force, k);
+    [~, spring_force] = calc_dir_and_force(position, 1, 0, 1, zx_length_init, spring_force, k);
+    [~, spring_force] = calc_dir_and_force(position, -1, 0, 1, xz_length_init, spring_force, k);
     
     %% xyz forces
     
-    [~, force] = calc_dir_and_force(position, 1, 1, 1, xyz_length_init, force, k);
-    [~, force] = calc_dir_and_force(position, 1, -1, 1, yxz_length_init, force, k);
-    [~, force] = calc_dir_and_force(position, -1, 1, 1, zxy_length_init, force, k);
-    [~, force] = calc_dir_and_force(position, -1, -1, 1, zyx_length_init, force, k);
+    [~, spring_force] = calc_dir_and_force(position, 1, 1, 1, xyz_length_init, spring_force, k);
+    [~, spring_force] = calc_dir_and_force(position, 1, -1, 1, yxz_length_init, spring_force, k);
+    [~, spring_force] = calc_dir_and_force(position, -1, 1, 1, zxy_length_init, spring_force, k);
+    [~, spring_force] = calc_dir_and_force(position, -1, -1, 1, zyx_length_init, spring_force, k);
     
     %%
-    
-    force = force - c * velocity + external_force;
+%     
+    force = spring_force - c * velocity + ground_force + external_force;
     
     position = position + velocity .* diff(time(1:2));
     velocity = velocity + force .* diff(time(1:2));
@@ -156,10 +167,22 @@ for time_index = 1:size(time, 1)
     scatp.XData = x_tmp;
     scatp.YData = y_tmp;
     scatp.ZData = z_tmp;
+    
+    quiv_force = ground_force;
+    quiv_force_x_tmp = quiv_force(:, :, :, 1); quiv_force_x_tmp = quiv_force_x_tmp(:);
+    quiv_force_y_tmp = quiv_force(:, :, :, 2); quiv_force_y_tmp = quiv_force_y_tmp(:);
+    quiv_force_z_tmp = quiv_force(:, :, :, 3); quiv_force_z_tmp = quiv_force_z_tmp(:);
+    quiv.XData = x_tmp;
+    quiv.YData = y_tmp;
+    quiv.ZData = z_tmp;
+    quiv.UData = quiv_force_x_tmp;
+    quiv.VData = quiv_force_y_tmp;
+    quiv.WData = quiv_force_z_tmp;
+    
+    
     drawnow
     
 end
-
 
 
 
