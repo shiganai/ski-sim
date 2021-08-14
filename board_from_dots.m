@@ -3,13 +3,13 @@
 
 clear all
 
-m = 1;
+m = 4;
 g = 9.8;
 
 row_num = 7;
 col_num = 7;
 stair_num = 3;
-k = 5;
+k = 10;
 c = 1;
 
 position_init = NaN(row_num, col_num, stair_num, 3);
@@ -74,8 +74,7 @@ external_force_fcn = @(position, velocity) external_force;
 % external_force_fcn = @(position, velocity) external_force_wall(position, 9, 'smaller', 10, 10)...
 %     + external_force;
 
-%{
-
+%{/
 ode_fcn = @(t, q) ddt_bfd(t, q, row_num, col_num, stair_num, ...
     spring_force_fcn, dumper_force_fcn, ground_force_fcn, external_force_fcn);
 
@@ -86,6 +85,7 @@ ode_option = odeset('Events', event_fcn);
 [time, q] = ode45(ode_fcn, time, q0, ode_option);
 %}
 
+%{
 q = NaN(size(time, 1), size(q0, 1));
 q(1,:) = q0;
 value = NaN(size(time, 1), 1);
@@ -100,6 +100,7 @@ for time_index = 2:size(time, 1)
     
     q(time_index, :) = q_tmp + dotq * diff(time(1:2));
 end
+%}
 
 position = NaN(row_num, col_num, stair_num, 3, size(time, 1));
 x_array = NaN(size(time, 1), row_num * col_num * stair_num + 4);
@@ -129,7 +130,7 @@ anime = SimplestAnime_scatter(time, x_array, y_array, z_array);
 anime.axAnime.XLim = [min(x_array, [], 'all'), max(x_array, [], 'all')];
 anime.axAnime.YLim = [min(y_array, [], 'all'), max(y_array, [], 'all')];
 anime.axAnime.ZLim = [min(z_array, [], 'all'), max(z_array, [], 'all')];
-view(anime.axAnime, [1,1,1])
+view(anime.axAnime, [1,0.1,0])
 daspect(anime.axAnime, [1,1,1])
 
 anime.pAnimes(end-3).MarkerFaceColor = 'blue';
@@ -137,6 +138,7 @@ anime.pAnimes(end-2).MarkerFaceColor = 'blue';
 anime.pAnimes(end-1).MarkerFaceColor = 'blue';
 anime.pAnimes(end-0).MarkerFaceColor = 'blue';
 
+plot(time, value)
 
 
 
