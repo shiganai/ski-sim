@@ -1,4 +1,4 @@
-function ground_force = calc_ground_force(position, height, buffer, power)
+function ground_force = ground_force(position, height, buffer, power)
 
 position_z = position(:, :, :, 3);
 
