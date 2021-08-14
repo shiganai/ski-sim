@@ -3,7 +3,7 @@
 
 clear all
 
-m = 2;
+m = 4;
 g = 9.8;
 
 row_num = 7;
