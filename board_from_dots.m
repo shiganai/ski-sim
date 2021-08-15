@@ -206,7 +206,23 @@ daspect([1,1,1])
 
 figure(3)
 plot(center_gf(:, 2), center_gf(:, 1))
+xlabel('y')
+ylabel('x')
 
+figure(3)
+plot(center_gf(:, 2), center_gf(:, 1))
+xlabel('y')
+ylabel('x')
+
+curvature_d = fnder(spline(center_gf(:, 1), center_gf(:, 2)));
+curvature_dd = fnder(curvature_d);
+
+curvature = fnval(curvature_dd, center_gf(:, 1)) ./ (1 + fnval(curvature_d, center_gf(:, 1)).^2).^(3/2);
+
+figure(4)
+plot(curvature, center_gf(:, 1))
+xlabel('Curvature')
+ylabel('x')
 
 
 
