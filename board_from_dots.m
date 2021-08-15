@@ -182,7 +182,7 @@ add_quiver3_force(position_end, ground_force_end)
 hold on
 surf(x_array(end, end-3:end), y_array(end, end-3:end), ones(4,4) * (z_min + time(end) * elevation_speed))
 hold off
-view([1,0,0])
+view([1,0,0.03])
 
 time(end)
 
