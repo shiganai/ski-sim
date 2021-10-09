@@ -114,7 +114,7 @@ classdef SimplestAnime_scatter < matlab.apps.AppBase
 %             app.pAnimes(1) = scatter3(app.axAnime, app.xArray(1, 1), app.yArray(1, 1), app.zArray(1, 1));
             hold(app.axAnime, 'on')
             for i = 1:length(app.xArray(1, :))
-                app.pAnimes(i) = scatter3(app.axAnime, app.xArray(1, i), app.yArray(1, i), app.zArray(1, i), 'r', 'fill');
+                app.pAnimes(i) = scatter3(app.axAnime, app.xArray(1, i), app.yArray(1, i), app.zArray(1, i), 'r', 'fill');d
             end
             hold(app.axAnime, 'off')
             
@@ -125,16 +125,16 @@ classdef SimplestAnime_scatter < matlab.apps.AppBase
             
             app.thSlider.Limits = [1, length(app.time)];
             drawnow
-            try_num = 0;
-            while true
-                try
-                    app.thSlider.MajorTickLabels = cellstr(num2str(time(app.thSlider.MajorTicks)));
-                    break
-                catch
-                    pause(app.pauseTime)
-                    try_num = try_num + 1;
-                end
-            end
+%             try_num = 0;
+%             while true
+%                 try
+%                     app.thSlider.MajorTickLabels = cellstr(num2str(time(app.thSlider.MajorTicks)));
+%                     break
+%                 catch
+%                     pause(app.pauseTime)
+%                     try_num = try_num + 1;
+%                 end
+%             end
             
         end
 

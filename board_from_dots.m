@@ -3,28 +3,36 @@
 
 clear all
 
-m = 0.13;
-g = 9.8;
 
-row_num = 40;
+board_height = 2;
+board_width = 0.3;
+board_depth = 0.02;
+
+row_num = 20;
 col_num = 10;
 stair_num = 3;
-k = 2500;
+
+m = 80;
+g = 9.8;
+k = 1e7;
 c = 1;
 
 position_init = NaN(row_num, col_num, stair_num, 3);
 velocity_init = zeros(size(position_init));
 
-position_init(:, :, :, 1) = ones(1, col_num, stair_num) .* (1:row_num)' * 2;
-position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num) / 4;
-matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * 0.3;
+position_init(:, :, :, 1) = ones(1, col_num, stair_num) .* (1:row_num)' * board_height / row_num;
+position_init(:, :, :, 2) = ones(row_num, 1, stair_num) .* (1:col_num) * board_width / col_num;
+matrix_tmp(1, 1, 1:stair_num) = 1:stair_num; matrix_tmp = matrix_tmp * board_depth / stair_num;
 position_init(:, :, :, 3) = ones(row_num, col_num, stair_num) .* matrix_tmp;
 
-r = 100;
+r = 20;
 for row_index = 1:row_num
     
-    l = row_index - row_num/2;
-    width = r * (1 - cos(l/r)) + 1;
+%     l_max = row_num - row_num/2;
+%     width_max = r * (1 - cos(l_max/r)) + 1;
+    
+    l = (row_index/row_num - 1/2) * board_height;
+    width = r * (1 - cos(l/r)) + (board_width / 2 - r * (1 - cos(board_height/2/r)));
     
 %     width = ((row_index/row_num - 1/2) * 2)^2 + 1;
 
@@ -84,12 +92,17 @@ elevation_speed = 1/10;
 q0 = [reshape(position_init, row_num * col_num * stair_num * 3, 1); ...
     reshape(velocity_init, row_num * col_num * stair_num * 3, 1)];
 
-spring_force_fcn = @(position) spring_force(position, dir_config, k);
+spring_force_fcn = @(position) spring_force_relatively(position, dir_config, k);
 dumper_force_fcn = @(velocity) - c * velocity;
 
 z_min = min(position_init(:, :, :, 3), [], 'all');
-ground_force_fcn = @(t, position) ground_force(position, z_min + t * elevation_speed, 20, 40);
+ground_force_fcn = @(t, position) ground_force(position, z_min + t * elevation_speed, 40, 40);
+
 external_force = zeros(size(position_init));
+external_force(:, :, :, 1) = 0;
+external_force(:, :, :, 2) = 0;
+external_force([4:6, 14:16], 4:7, stair_num, 3) = -m * g / 11 / 5;
+% external_force(row_num - floor(1/4*row_num):row_num + floor(1/4*row_num), col_num - floor(1/4*col_num):col_num + floor(1/4*col_num), stair_num, 3) = -m * g / floor(1/2*row_num) / floor(1/2*col_num);
 
 external_force_fcn = @(position, velocity) external_force;
 % external_force_fcn = @(position, velocity) external_force_wall(position, 9, 'smaller', 10, 10)...
@@ -99,11 +112,13 @@ external_force_fcn = @(position, velocity) external_force;
 ode_fcn = @(t, q) ddt_bfd(t, q, row_num, col_num, stair_num, ...
     spring_force_fcn, dumper_force_fcn, ground_force_fcn, external_force_fcn);
 
-event_fcn = @(t, q) event_gf(t, q, row_num, col_num, stair_num, ground_force_fcn, m, g);
+event_fcn = @(t, q) event_gf(t, q, row_num, col_num, stair_num, ground_force_fcn, external_force_fcn);
 
 ode_option = odeset('Events', event_fcn);
 
 [time, q] = ode45(ode_fcn, time, q0, ode_option);
+
+fprintf("ode45 is done\n")
 %}
 
 %{
@@ -157,7 +172,6 @@ anime.axAnime.ZLim = [min(z_array, [], 'all'), max(z_array, [], 'all')];
 view(anime.axAnime, [0,0.1,1])
 daspect(anime.axAnime, [1,1,1])
 
-% target_index_array = find(z_array(1,:) == position_init(1,1,1,3));
 target_index_array = 1:row_num * col_num;
 for target_index = 1:row_num * col_num
     anime.pAnimes(target_index_array(target_index)).MarkerFaceColor = 'green';
@@ -180,7 +194,7 @@ ground_force_end = ground_force_fcn(time(end), position_end);
 figure(1)
 add_quiver3_force(position_end, ground_force_end)
 hold on
-surf(x_array(end, end-3:end), y_array(end, end-3:end), ones(4,4) * (z_min + time(end) * elevation_speed))
+surf(x_array(end, end-3:end), y_array(end, end-3:end), ones(4,4) * (z_min + time(end) * elevation_speed), 'FaceAlpha', 0.1)
 hold off
 view([1,0,0.03])
 
@@ -204,6 +218,7 @@ ylim([min(x_array, [], 'all'), max(x_array, [], 'all')]);
 xlim([min(y_array, [], 'all'), max(y_array, [], 'all')]);
 daspect([1,1,1])
 
+%{
 figure(3)
 plot(center_gf(:, 2), center_gf(:, 1))
 xlabel('y')
@@ -223,7 +238,7 @@ figure(4)
 plot(curvature, center_gf(:, 1))
 xlabel('Curvature')
 ylabel('x')
-
+%}
 
 
 
